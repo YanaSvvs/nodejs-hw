@@ -1,17 +1,16 @@
 
-require('dotenv').config();
-
-const express = require('express');
-const cors = require('cors');
-const pinoHttp = require('pino-http');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import pinoHttp from 'pino-http';
 
 const PORT = process.env.PORT || 3030;
-const app = express();
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(pinoHttp({
-
+  
   transport: {
     target: 'pino-pretty', 
   },
@@ -31,21 +30,19 @@ app.get('/notes/:noteId', (req, res) => {
 });
 
 app.get('/test-error', (req, res, next) => {
-
   throw new Error('Simulated server error');
 });
 
 app.use((req, res, next) => {
- 
   res.status(404).json({
     message: 'Route not found',
   });
 });
 
 app.use((err, req, res, next) => {
-  
+ 
   console.error('Unhandled error:', err.stack);
-  
+ 
   const statusCode = err.status || 500;
   const message = err.message || 'Internal Server Error';
 
